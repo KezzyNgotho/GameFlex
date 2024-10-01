@@ -1,0 +1,26 @@
+{
+  "canisters": {
+    "GameFlex_backend": {
+      "main": "src/GameFlex_backend/main.mo",
+      "type": "motoko"
+    },
+    "GameFlex_frontend": {
+      "dependencies": [
+        "GameFlex_backend"
+      ],
+      "source": [
+        "src/GameFlex_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "GameFlex_frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
