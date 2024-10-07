@@ -1,37 +1,105 @@
+/* src/styles/globals.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Root variables for light theme */
+:root {
+  --bg-color: white; /* Bright background color */
+  --text-color: #2c3e50; /* Darker text color for contrast */
+  --primary-color: #e67e22; /* Bright orange for accents */
+  --secondary-color: #e74c3c; /* Bright red for alerts */
+  --hover-color: #d35400; /* Darker orange for hover effects */
+  --sidebar-bg-color: #ecf0f1; /* Light sidebar background */
+}
+
+
+
+/* Dark theme variables */
+.dark {
+  --bg-color: #111827;
+  --text-color: white;
+}
+
 body {
-  font-family: sans-serif;
-  font-size: 1.5rem;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
-img {
-  max-width: 50vw;
-  max-height: 25vw;
-  display: block;
-  margin: auto;
+/* Custom sidebar styles */
+.sidebar {
+  z-index: 10; /* Ensure the sidebar is on top */
+  position: relative;
+  width: 16rem; /* Set width for sidebar */
+  background-color: var(--sidebar-bg-color); /* Light background for sidebar */
+  color: #2c3e50; /* Dark text color for sidebar */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+  border-right: 2px solid var(--primary-color); /* Accent border for sidebar */
 }
 
-form {
+.sidebar h2 {
+  font-size: 1.5rem; /* Text size for heading */
+  font-weight: 700; /* Bold */
+  padding: 1.5rem; /* Padding */
+  text-align: center; /* Center heading text */
+  background-color: var(--primary-color); /* Bright orange header background */
+  color: white; /* White text for contrast */
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 0.75rem 1rem; /* Padding inside each item */
   display: flex;
-  justify-content: center;
-  gap: 0.5em;
-  flex-flow: row wrap;
-  max-width: 40vw;
-  margin: auto;
-  align-items: baseline;
+  align-items: center;
+  transition: background-color 0.2s ease-in-out;
+  color: #2c3e50; /* Dark text color */
 }
 
-button[type="submit"] {
-  padding: 5px 20px;
-  margin: 10px auto;
-  float: right;
+.sidebar li:hover {
+  background-color: var(--hover-color); /* Darker orange on hover */
+  color: white; /* White text on hover */
 }
 
-#greeting {
-  margin: 10px auto;
-  padding: 10px 60px;
-  border: 1px solid #222;
+.sidebar li svg {
+  margin-right: 0.75rem; /* Space between icon and text */
 }
 
-#greeting:empty {
-  display: none;
+/* Custom dashboard styles */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh; /* Full viewport height */
+}
+
+.dashboard-content {
+  flex-grow: 1; /* Take up remaining space */
+  padding: 1.5rem; /* Padding around content */
+  background-color: #f9fafb; /* Light background for the main content */
+}
+
+.dashboard-header {
+  font-size: 2rem; /* Large header text */
+  font-weight: 700;
+  margin-bottom: 1rem; /* Space below header */
+  color: var(--primary-color); /* Bright color for the header */
+}
+
+.dashboard-section {
+  background-color: white; /* White background for sections */
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Light shadow for sections */
+  margin-bottom: 1.5rem; /* Space between sections */
+  border-left: 5px solid var(--primary-color); /* Accent border for sections */
+}
+
+.dashboard-section h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--primary-color); /* Bright color for section headings */
 }

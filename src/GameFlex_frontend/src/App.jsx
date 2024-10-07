@@ -1,31 +1,25 @@
-import { useState } from 'react';
-import { GameFlex_backend } from 'declarations/GameFlex_backend';
+// src/App.jsx
 
-function App() {
-  const [greeting, setGreeting] = useState('');
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import LandingPage from './components/LandingPage';
+import UserAuthentication from './components/UseAuthentication';
+import RoleSelection from './components/RoleSelection';
+import Dashboard from '../src/components/Dashboard'
+import StadiumDashboard from '../src/components/StadiumDashboard';
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    const name = event.target.elements.name.value;
-    GameFlex_backend.greet(name).then((greeting) => {
-      setGreeting(greeting);
-    });
-    return false;
-  }
-
+const App = () => {
   return (
-    <main>
-      <img src="/logo2.svg" alt="DFINITY logo" />
-      <br />
-      <br />
-      <form action="#" onSubmit={handleSubmit}>
-        <label htmlFor="name">Enter your name: &nbsp;</label>
-        <input id="name" alt="Name" type="text" />
-        <button type="submit">Click Me!</button>
-      </form>
-      <section id="greeting">{greeting}</section>
-    </main>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/authentication" element={<UserAuthentication />} />
+        <Route path="/role-selection" element={<RoleSelection />} />
+        <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="/stadium/:stadiumId" element={<StadiumDashboard />} /> {/* Route for individual stadiums */}
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
