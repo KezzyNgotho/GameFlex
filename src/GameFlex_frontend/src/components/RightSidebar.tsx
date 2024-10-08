@@ -1,7 +1,7 @@
 // src/components/RightSidebar.tsx
 import React from 'react';
 import { Switch, Button } from 'antd';
-import { UserOutlined, SettingOutlined, BulbOutlined, MenuOutlined, ThemeOutlined } from '@ant-design/icons';
+import { UserOutlined, SettingOutlined, BulbOutlined, MenuOutlined} from '@ant-design/icons';
 import "../index.scss";
 
 interface RightSidebarProps {

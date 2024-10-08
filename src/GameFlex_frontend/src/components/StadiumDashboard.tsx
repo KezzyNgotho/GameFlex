@@ -1,18 +1,17 @@
-// src/components/StadiumDashboard.tsx
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Layout, Menu, Card, Button, Form, Input, Modal, message } from 'antd';
+import { Layout, Menu, Card, Button, Form, Input, Modal, message, Badge, Dropdown } from 'antd';
 import {
   SettingOutlined,
   CalendarOutlined,
-  InfoCircleOutlined,
   UserAddOutlined,
-  ExpandOutlined,
-  ToolOutlined,
-  TeamOutlined,
-  SkinOutlined
+  UserOutlined,
+  HomeOutlined,
+  BellOutlined,
+  BarChartOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
+import StadiumDisplay from '../components/Stadium3D'; // Import the stadium component
 
 const { Header, Content, Sider } = Layout;
 
@@ -21,11 +20,17 @@ const StadiumDashboard: React.FC = () => {
   const [stadiumName, setStadiumName] = useState('My Awesome Stadium');
   const [isEditing, setIsEditing] = useState(false);
   const [eventForm] = Form.useForm();
-  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [events, setEvents] = useState([]);
+  const [isEventModalVisible, setIsEventModalVisible] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [notifications, setNotifications] = useState<number>(5);
+
+  // State for customization
+  const [stadiumColor, setStadiumColor] = useState('#ffcc00'); // Example color customization
+  const [stadiumSize, setStadiumSize] = useState({ width: 500, height: 300 }); // Example size customization
 
   useEffect(() => {
     // Fetch stadium details using the stadiumId from API or context
-    // Example: fetchStadiumDetails(stadiumId).then(data => setStadiumName(data.name));
   }, [stadiumId]);
 
   const handleEditStadiumName = (values: { name: string }) => {
@@ -34,144 +39,107 @@ const StadiumDashboard: React.FC = () => {
     message.success('Stadium name updated successfully!');
   };
 
-  const handleHostEvent = (values: { eventName: string; eventDate: string }) => {
-    console.log('Event hosted:', values);
+  const handleHostEvent = (values) => {
+    setEvents((prevEvents) => [...prevEvents, values]);
     message.success(`Event "${values.eventName}" scheduled for ${values.eventDate}`);
     eventForm.resetFields();
+    setIsEventModalVisible(false);
   };
 
-  const toggleFullScreen = () => {
-    setIsFullScreen(!isFullScreen);
-    const stadiumArea = document.getElementById('virtual-stadium');
-    if (stadiumArea) {
-      if (!isFullScreen) {
-        if (stadiumArea.requestFullscreen) {
-          stadiumArea.requestFullscreen();
-        } else if (stadiumArea.requestFullscreen) {
-          stadiumArea.requestFullscreen();
-        } else if (stadiumArea.requestFullscreen) {
-          stadiumArea.requestFullscreen();
-        } else if (stadiumArea.requestFullscreen) {
-          stadiumArea.requestFullscreen();
-        }
-      } else {
-        document.exitFullscreen();
-      }
-    }
+  const handleNotificationClick = () => {
+    setNotifications(0); // Reset notifications when clicked
+    message.info('All notifications viewed!');
   };
 
   const eventCategories = [
-    { key: 'sports', label: 'Sports Events', description: 'Football matches, basketball games, athletics, and other sports competitions.' },
-    { key: 'concerts', label: 'Concerts and Festivals', description: 'Live music performances, cultural events, and festivals.' },
-    { key: 'corporate', label: 'Corporate Events', description: 'Company meetings, product launches, and corporate gatherings.' },
-    { key: 'community', label: 'Community Events', description: 'Local events, fairs, and charity functions.' },
-  ];
-
-  const managementOptions = [
-    { key: 'maintenance', label: 'Maintenance', description: 'Regular maintenance of facilities, seating, and amenities.' },
-    { key: 'staff', label: 'Staff Management', description: 'Hiring and scheduling staff for events, including security, ushers, and concessions.' },
-  ];
-
-  const customizationOptions = [
-    { key: 'branding', label: 'Naming and Branding', description: 'Customizing the stadium\'s name and branding for events or sponsors.' },
-    { key: 'interior', label: 'Interior Design', description: 'Configuring seating arrangements and decor for specific events.' },
+    { key: 'sports', label: 'Sports Events' },
+    { key: 'concerts', label: 'Concerts and Festivals' },
+    { key: 'corporate', label: 'Corporate Events' },
+    { key: 'community', label: 'Community Events' },
   ];
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{ backgroundColor: '#001529', color: '#fff' }}>
-        <h1 style={{ color: '#fff', margin: 0 }}>Stadium Dashboard</h1>
+      <Header style={{ backgroundColor: '#001529', color: '#fff', display: 'flex', justifyContent: 'space-between' }}>
+        <h1 style={{ color: '#fff', margin: 0 }}>{stadiumName} Dashboard</h1>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Badge count={notifications} style={{ marginRight: 20 }}>
+            <BellOutlined style={{ fontSize: '24px', cursor: 'pointer' }} onClick={handleNotificationClick} />
+          </Badge>
+          <Dropdown
+            overlay={
+              <Menu>
+                <Menu.Item key="profile">
+                  <UserOutlined />
+                  Profile
+                </Menu.Item>
+                <Menu.Item key="settings">
+                  <SettingOutlined />
+                  Settings
+                </Menu.Item>
+                <Menu.Item key="logout">
+                  <UserAddOutlined />
+                  Logout
+                </Menu.Item>
+              </Menu>
+            }
+            trigger={['click']}
+          >
+            <UserOutlined style={{ fontSize: '24px', cursor: 'pointer' }} />
+          </Dropdown>
+        </div>
       </Header>
       <Layout>
-        <Sider width={200} style={{ background: '#f0f2f5' }}>
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={['1']}
-            style={{ height: '100%', borderRight: 0 }}
-          >
-            <Menu.Item key="1" icon={<InfoCircleOutlined />}>
-              <Link to="#">Stadium Info</Link>
+        <Sider width={250} style={{ background: '#f0f2f5' }}>
+          <Menu mode="inline" defaultSelectedKeys={['home']} style={{ height: '100%', borderRight: 0 }}>
+            <Menu.Item key="home" icon={<HomeOutlined />}>
+              <Link to="/Dashboard">Home</Link>
             </Menu.Item>
-            <Menu.Item key="2" icon={<SettingOutlined />} onClick={() => setIsEditing(true)}>
+            <Menu.Item key="edit" icon={<EditOutlined />} onClick={() => setIsEditing(true)}>
               Edit Stadium Name
             </Menu.Item>
-            <Menu.Item key="3" icon={<CalendarOutlined />}>
-              <Link to="#">Host Events</Link>
-            </Menu.Item>
-            <Menu.Item key="4" icon={<UserAddOutlined />}>
-              <Link to="#">Manage Users</Link>
+            <Menu.Item key="hostEvent" icon={<CalendarOutlined />} onClick={() => setIsEventModalVisible(true)}>
+              Host Events
             </Menu.Item>
             <Menu.SubMenu key="eventCategories" title="Event Categories" icon={<CalendarOutlined />}>
-              {eventCategories.map(category => (
-                <Menu.Item key={category.key}>
-                  <Link to="#">{category.label}</Link>
+              {eventCategories.map((category) => (
+                <Menu.Item key={category.key} onClick={() => setSelectedCategory(category.key)}>
+                  {category.label}
                 </Menu.Item>
               ))}
             </Menu.SubMenu>
-            <Menu.SubMenu key="stadiumManagement" title="Stadium Management" icon={<ToolOutlined />}>
-              {managementOptions.map(option => (
-                <Menu.Item key={option.key}>
-                  <Link to="#">{option.label}</Link>
-                </Menu.Item>
-              ))}
-            </Menu.SubMenu>
-            <Menu.SubMenu key="customizationOptions" title="Customization Options" icon={<SkinOutlined />}>
-              {customizationOptions.map(option => (
-                <Menu.Item key={option.key}>
-                  <Link to="#">{option.label}</Link>
-                </Menu.Item>
-              ))}
-            </Menu.SubMenu>
-            <Menu.Item key="8" icon={<ExpandOutlined />} onClick={toggleFullScreen}>
-              {isFullScreen ? 'Exit Full Screen' : 'Full Screen'}
+            <Menu.Item key="statistics" icon={<BarChartOutlined />}>
+              Live Statistics
+            </Menu.Item>
+            <Menu.Item key="settings" icon={<SettingOutlined />}>
+              Settings
             </Menu.Item>
           </Menu>
         </Sider>
         <Layout style={{ padding: '24px' }}>
-          <Content
-            style={{
-              padding: 24,
-              margin: 0,
-              minHeight: 280,
-              background: '#fff',
-              borderRadius: '8px',
-            }}
-          >
-            <h2>{stadiumName}</h2>
+          <Content>
+            {/* Stadium Image Display */}
+            <div style={{ marginBottom: '24px', height: '400px', overflow: 'hidden' }}>
+              <StadiumDisplay color={stadiumColor} size={stadiumSize} /> {/* Pass props for customization */}
+            </div>
 
-            <Card title="Virtual Stadium" style={{ marginBottom: '16px' }}>
-              <div id="virtual-stadium" style={{
-                width: isFullScreen ? '100%' : '100%',
-                height: isFullScreen ? '100vh' : '300px',
-                backgroundColor: '#e6e6e6',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: '8px',
-                position: 'relative'
-              }}>
-                <h3 style={{ textAlign: 'center' }}>Virtual Stadium (Interactive Area)</h3>
-                <Button style={{ position: 'absolute', bottom: '10px' }} onClick={() => message.info("Customize your stadium here!")}>Customize Stadium</Button>
-              </div>
+            <Card title={stadiumName} style={{ marginBottom: 24 }}>
+              {selectedCategory ? <p>Details about {selectedCategory}</p> : <p>Select an event category to manage.</p>}
             </Card>
 
-            <Modal
-              title="Edit Stadium Name"
-              visible={isEditing}
-              onCancel={() => setIsEditing(false)}
-              footer={null}
-            >
-              <Form onFinish={handleEditStadiumName}>
-                <Form.Item
-                  label="Stadium Name"
-                  name="name"
-                  initialValue={stadiumName}
-                  rules={[{ required: true, message: 'Please enter a stadium name' }]}
-                >
+            {/* Event Modal */}
+            <Modal title="Host Event" visible={isEventModalVisible} onCancel={() => setIsEventModalVisible(false)} footer={null}>
+              <Form form={eventForm} onFinish={handleHostEvent}>
+                <Form.Item label="Event Name" name="eventName" rules={[{ required: true, message: 'Please enter the event name!' }]}>
                   <Input />
                 </Form.Item>
+                <Form.Item label="Event Date" name="eventDate" rules={[{ required: true, message: 'Please select the event date!' }]}>
+                  <Input type="date" />
+                </Form.Item>
                 <Form.Item>
-                  <Button type="primary" htmlType="submit">Save</Button>
+                  <Button type="primary" htmlType="submit">
+                    Schedule Event
+                  </Button>
                 </Form.Item>
               </Form>
             </Modal>

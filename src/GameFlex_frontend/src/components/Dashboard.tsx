@@ -1,4 +1,3 @@
-// Dashboard.tsx
 import React, { useState } from 'react';
 import { Layout, Divider } from 'antd';
 import Sidebar from './Sidebar';
@@ -10,7 +9,7 @@ import RevenueTracker from './RevenueTracker';
 import CreateTeam from './CreateTeam';
 import RightSidebar from './RightSidebar';
 import TopBar from './TopBar';
-import "../index.scss";
+import '../index.scss';
 
 const { Content } = Layout;
 
@@ -24,19 +23,9 @@ const Dashboard: React.FC = () => {
     if (!isFullScreen) {
       if (document.documentElement.requestFullscreen) {
         document.documentElement.requestFullscreen();
-      } else if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen();
-      } else if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen();
-      } else if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen();
       }
     } else {
       if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.exitFullscreen) {
         document.exitFullscreen();
       }
     }
@@ -93,8 +82,9 @@ const Dashboard: React.FC = () => {
         {!rightCollapsed && (
           <RightSidebar
             collapsed={rightCollapsed}
-            onCollapse={() => setRightCollapsed(true)}
-            style={{ height: 'calc(100vh - 66px)', position: 'fixed', top: '314px', right: 0 }}
+            onCollapse={() => setRightCollapsed(true)} toggleTheme={function (): void {
+              throw new Error('Function not implemented.');
+            } } currentTheme={'light'}           // style={{ height: 'calc(100vh - 66px)', position: 'fixed', top: '314px', right: 0 }}
           />
         )}
       </Layout>
